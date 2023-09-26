@@ -1,6 +1,6 @@
 import type { RChartsProps } from './types';
 
-import { useAsync, useResize } from '@laser-ui/hooks';
+import { useAsync, useResize, useUnmount } from '@laser-ui/hooks';
 import * as echarts from 'echarts';
 import { forwardRef, useCallback, useRef } from 'react';
 
@@ -21,20 +21,22 @@ export const RCharts = forwardRef<echarts.ECharts, RChartsProps>((props, ref): J
 
   const async = useAsync();
 
+  const instanceRef = useRef<echarts.ECharts>();
   const containerCallbackRef = useCallback(
     (el: HTMLDivElement) => {
-      const instance = echarts.init(el, initOpts?.theme, initOpts);
+      instanceRef.current?.dispose();
+      instanceRef.current = echarts.init(el, initOpts?.theme, initOpts);
       if (typeof ref === 'function') {
-        ref(instance);
+        ref(instanceRef.current);
       } else if (ref) {
-        ref.current = instance;
+        ref.current = instanceRef.current;
       }
-      return () => {
-        instance.dispose();
-      };
     },
     [initOpts, ref],
   );
+  useUnmount(() => {
+    instanceRef.current?.dispose();
+  });
 
   useResize(
     elRef,
