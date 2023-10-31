@@ -21,15 +21,23 @@ export const RCharts = forwardRef<echarts.ECharts, RChartsProps>((props, ref): J
 
   const async = useAsync();
 
-  const instanceRef = useRef<echarts.ECharts>();
-  const containerCallbackRef = useCallback(
-    (el: HTMLDivElement) => {
-      instanceRef.current?.dispose();
-      instanceRef.current = echarts.init(el, initOpts?.theme, initOpts);
-      if (typeof ref === 'function') {
-        ref(instanceRef.current);
-      } else if (ref) {
-        ref.current = instanceRef.current;
+  const instanceRef = useRef<echarts.ECharts | null>(null);
+  const containerCallbackRef = useCallback<React.RefCallback<HTMLDivElement>>(
+    (el) => {
+      const setRef = (instance: echarts.ECharts | null) => {
+        if (typeof ref === 'function') {
+          ref(instance);
+        } else if (ref) {
+          ref.current = instance;
+        }
+      };
+      if (el) {
+        instanceRef.current = echarts.init(el, initOpts?.theme, initOpts);
+        setRef(instanceRef.current);
+      } else {
+        instanceRef.current?.dispose();
+        instanceRef.current = null;
+        setRef(null);
       }
     },
     [initOpts, ref],
