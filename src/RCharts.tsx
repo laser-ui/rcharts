@@ -1,12 +1,12 @@
 import type { RChartsProps } from './types';
 
-import { useAsync, useResize, useUnmount } from '@laser-ui/hooks';
+import { useAsync, useResize } from '@laser-ui/hooks';
 import * as echarts from 'echarts';
 import { forwardRef, useCallback, useRef } from 'react';
 
 export const RCharts = forwardRef<echarts.ECharts, RChartsProps>((props, ref): JSX.Element => {
   const {
-    initOpts,
+    init,
     autoResize = false,
     autoResizeDebounce = 0,
 
@@ -32,7 +32,7 @@ export const RCharts = forwardRef<echarts.ECharts, RChartsProps>((props, ref): J
         }
       };
       if (el) {
-        instanceRef.current = echarts.init(el, initOpts?.theme, initOpts);
+        instanceRef.current = echarts.init(el, ...(init ? init() : []));
         setRef(instanceRef.current);
       } else {
         instanceRef.current?.dispose();
@@ -40,11 +40,8 @@ export const RCharts = forwardRef<echarts.ECharts, RChartsProps>((props, ref): J
         setRef(null);
       }
     },
-    [initOpts, ref],
+    [init, ref],
   );
-  useUnmount(() => {
-    instanceRef.current?.dispose();
-  });
 
   useResize(
     elRef,
