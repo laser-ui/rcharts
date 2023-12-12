@@ -1,10 +1,11 @@
 import type { RChartsProps } from './types';
+import type { ECharts } from 'echarts/core';
 
 import { useAsync, useResize } from '@laser-ui/hooks';
-import * as echarts from 'echarts';
+import * as echarts from 'echarts/core';
 import { forwardRef, useCallback, useRef } from 'react';
 
-export const RCharts = forwardRef<echarts.ECharts, RChartsProps>((props, ref): JSX.Element => {
+export const RCharts = forwardRef<ECharts, RChartsProps>((props, ref): JSX.Element => {
   const {
     init,
     autoResize = false,
@@ -21,10 +22,10 @@ export const RCharts = forwardRef<echarts.ECharts, RChartsProps>((props, ref): J
 
   const async = useAsync();
 
-  const instanceRef = useRef<echarts.ECharts | null>(null);
+  const instanceRef = useRef<ECharts | null>(null);
   const containerCallbackRef = useCallback<React.RefCallback<HTMLDivElement>>(
     (el) => {
-      const setRef = (instance: echarts.ECharts | null) => {
+      const setRef = (instance: ECharts | null) => {
         if (typeof ref === 'function') {
           ref(instance);
         } else if (ref) {

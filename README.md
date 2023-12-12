@@ -11,14 +11,14 @@ npm install @laser-ui/rcharts
 # Getting Started
 
 ```tsx
-import type * as echarts from 'echarts';
+import type { ECharts } from 'echarts/core';
 
 import { RCharts } from '@laser-ui/rcharts';
 import { useCallback, useEffect, useRef } from 'react';
 
 export default function App() {
-  const chartRef = useRef<echarts.ECharts>(null);
-  const chartCallbackRef = useCallback((chart: echarts.ECharts) => {
+  const chartRef = useRef<ECharts>(null);
+  const chartCallbackRef = useCallback((chart: ECharts) => {
     chart.setOption({
       xAxis: {
         type: 'category',
